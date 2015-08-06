@@ -12,6 +12,10 @@ module.exports = function (grunt) {
             js: {
                 files: '<%= jshint.all %>',
                 tasks: ['combine','copy:examples']
+            },
+            docs: {
+                files: '<%= jshint.all %>',
+                tasks: ['jsdoc']                
             }
         },
         concat: {
@@ -21,7 +25,7 @@ module.exports = function (grunt) {
             },
             dist: {
                 src: [
-                    'c3js-directive.js',
+                    'src/*.js',
                     ],
                 dest: '<%= pkg.name %>.js'
             }
@@ -33,7 +37,7 @@ module.exports = function (grunt) {
             },
             all: [
                 'Gruntfile.js',
-                'c3js-directive.js'
+                'src/*.js'
             ]
         },
         uglify: {
@@ -68,10 +72,23 @@ module.exports = function (grunt) {
         },
         devserver: {
             options: {
-                base: 'examples'
+                base: 'examples',
+                port:8000
             },
             server: {}
+        },
+      jsdoc : {
+        dist: {
+          src: [
+            'src/**/*.js'
+          ], 
+          options: {
+            destination: 'docs',
+            configure: 'node_modules/angular-jsdoc/conf.json',
+            template: 'node_modules/angular-jsdoc/template'
+          }
         }
+      }        
     });
 
     grunt.loadNpmTasks('grunt-contrib-concat');
@@ -80,6 +97,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-devserver');
+    grunt.loadNpmTasks('grunt-jsdoc');
 
     grunt.registerTask('combine',['concat:dist','uglify:dist','copy:examples']);
 };
